@@ -1,7 +1,15 @@
 [package]
 name = "uaparser-rs"
+authors = ["Ossama Zaid <w4rz4zi@gmail.com>"]
 version = "0.1.0"
 edition = "2021"
+license = "MIT"
+license-file = "LICENSE.md"
+description = "A simple user agent parser for rust"
+keywords = ["browser", "user agent", "uap", "user", "device"]
+homepage = "https://github.com/OssamaZ/uaparser-rs"
+repository = "https://github.com/OssamaZ/uaparser-rs"
+readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
