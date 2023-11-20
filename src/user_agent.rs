@@ -1,4 +1,4 @@
-use super::Parser;
+use crate::parser::Parser;
 use regex::{Captures, Regex};
 
 macro_rules! capture {
