@@ -2,7 +2,7 @@
 //! [ua-parser/specification](https://github.com/ua-parser/uap-core/blob/master/docs/specification.md).
 //!
 //! ```rust
-//! use uaparser_rs::parser::UAParser;
+//! use uaparser_rs::UAParser;
 //! let uap = UAParser::init("./src/regexes.yaml").expect("Unable to load regexes file.");
 //! let ua_str = String::from("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36");
 //! let result = uap.parse(ua_str);
@@ -20,12 +20,14 @@
 
 mod error;
 mod file;
-pub mod parser;
+mod parser;
 mod user_agent;
+
+pub use parser::{Client, UAParser};
 
 #[cfg(test)]
 mod test {
-  use super::parser::UAParser;
+  use super::*;
 
   #[test]
   fn it_works() {

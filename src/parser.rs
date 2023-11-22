@@ -4,7 +4,6 @@ use crate::{
   user_agent::{UserAgent, UserAgentMatcher},
 };
 use regex::Regex;
-use serde_yaml;
 use std::fs;
 
 pub trait Parser {
