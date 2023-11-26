@@ -1,8 +1,6 @@
 use crate::{
-  device::{Device, DeviceMatcher},
-  error::UAParserError,
-  user_agent::{UserAgent, UserAgentMatcher},
-  yaml_file::YamlFile,
+  device::DeviceMatcher, error::UAParserError, os::OsMatcher, user_agent::UserAgentMatcher,
+  yaml_file::YamlFile, Device, Os, UserAgent,
 };
 use regex::Regex;
 use std::fs;
@@ -16,12 +14,14 @@ pub trait Parser {
 pub struct UAParser {
   ua_matchers: Vec<UserAgentMatcher>,
   device_matchers: Vec<DeviceMatcher>,
+  os_matchers: Vec<OsMatcher>,
 }
 
 #[derive(Debug)]
 pub struct Client {
   pub user_agent: UserAgent,
   pub device: Device,
+  pub os: Os,
 }
 
 impl UAParser {
@@ -30,6 +30,7 @@ impl UAParser {
     let regex_file: YamlFile = serde_yaml::from_reader(file)?;
     let mut ua_matchers = Vec::with_capacity(regex_file.ua_parsers.len());
     let mut device_matchers = Vec::with_capacity(regex_file.device_parsers.len());
+    let mut os_matchers = Vec::with_capacity(regex_file.os_parsers.len());
     for parser in regex_file.ua_parsers {
       ua_matchers.push(UserAgentMatcher {
         regex: Regex::new(&parser.regex)?,
@@ -48,9 +49,20 @@ impl UAParser {
         model_replacement: parser.model_replacement,
       });
     }
+    for parser in regex_file.os_parsers {
+      os_matchers.push(OsMatcher {
+        regex: Regex::new(&parser.regex)?,
+        family_replacement: parser.family_replacement,
+        v1_replacement: parser.v1_replacement,
+        v2_replacement: parser.v2_replacement,
+        v3_replacement: parser.v3_replacement,
+        v4_replacement: parser.v4_replacement,
+      });
+    }
     Ok(Self {
       ua_matchers,
       device_matchers,
+      os_matchers,
     })
   }
 
@@ -58,6 +70,11 @@ impl UAParser {
     Client {
       user_agent: self
         .ua_matchers
+        .iter()
+        .find_map(|matcher| matcher.parse(user_agent.clone()))
+        .unwrap_or_default(),
+      os: self
+        .os_matchers
         .iter()
         .find_map(|matcher| matcher.parse(user_agent.clone()))
         .unwrap_or_default(),

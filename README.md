@@ -12,12 +12,42 @@ let ua_str = String::from("Mozilla/5.0 (Linux; Android 4.0.1; Galaxy Nexus Build
 
 let client = uap.parse(ua_str);
 
+/*
+  client {
+    user_agent: {
+      family,
+      major,
+      minor,
+      patch,
+      patch_minor,
+    },
+    os: {
+      family,
+      major,
+      minor,
+      patch,
+      patch_minor,
+    },
+    device: {
+      family,
+      brand,
+      model,
+    }
+  }
+*/
+
 // User Agent
 assert_eq!(client.user_agent.family, "Chrome Mobile");
 assert_eq!(client.user_agent.major, Some(String::from("26")));
 assert_eq!(client.user_agent.minor, Some(String::from("0")));
 assert_eq!(client.user_agent.patch, Some(String::from("1410")));
 assert_eq!(client.user_agent.patch_minor, Some(String::from("58")));
+
+// Os
+assert_eq!(client.os.family, "Android");
+assert_eq!(client.os.major, Some(String::from("4")));
+assert_eq!(client.os.minor, Some(String::from("0")));
+assert_eq!(client.os.patch, Some(String::from("1")));
 
 // Device
 assert_eq!(client.device.family, "Samsung Galaxy Nexus");
