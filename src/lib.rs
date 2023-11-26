@@ -3,7 +3,7 @@
 //!
 //! ```rust
 //! use uaparser_rs::UAParser;
-//! let uap = UAParser::from_yaml("./src/regexes.yaml").expect("Unable to load regexes file.");
+//! let uap = UAParser::from_yaml("./src/regexes.yaml").unwrap();
 //! let ua_str = String::from("Mozilla/5.0 (Linux; Android 4.0.1; Galaxy Nexus Build/ITL41F) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.58 Mobile Safari/537.31");
 //! let client = uap.parse(ua_str);
 //! // User Agent
@@ -19,7 +19,7 @@
 //! ```
 //! You can also use the string itself
 //! ```rust
-// ! let uap = UAParser::from_yaml("./src/regexes.yaml").expect("Unable to load regexes file.");
+// ! let uap = UAParser::from_yaml("./src/regexes.yaml").unwrap();
 // ! let ua_str = "Mozilla/5.0 (Linux; Android 4.0.1; Galaxy Nexus Build/ITL41F) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.58 Mobile Safari/537.31";
 // ! let user_agent: user_agent = ua_str.parse().expect("Unable to parse string");
 // ! assert_eq!(user_agent.family, "user_agent");
