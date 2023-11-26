@@ -1,7 +1,7 @@
 use crate::{
   error::UAParserError,
-  file::RegexFile,
   user_agent::{UserAgent, UserAgentMatcher},
+  yaml_file::YamlFile,
 };
 use regex::Regex;
 use std::fs;
@@ -13,7 +13,7 @@ pub trait Parser {
 
 #[derive(Debug)]
 pub struct UAParser {
-  browser_matchers: Vec<UserAgentMatcher>,
+  ua_matchers: Vec<UserAgentMatcher>,
 }
 
 #[derive(Debug)]
@@ -22,12 +22,12 @@ pub struct Client {
 }
 
 impl UAParser {
-  pub fn init(path: &str) -> Result<Self, UAParserError> {
+  pub fn from_yaml(path: &str) -> Result<Self, UAParserError> {
     let file = fs::File::open(path)?;
-    let regex_file: RegexFile = serde_yaml::from_reader(file)?;
-    let mut browser_matchers = Vec::with_capacity(regex_file.user_agent_parsers.len());
-    for parser in regex_file.user_agent_parsers {
-      browser_matchers.push(UserAgentMatcher {
+    let regex_file: YamlFile = serde_yaml::from_reader(file)?;
+    let mut ua_matchers = Vec::with_capacity(regex_file.ua_parsers.len());
+    for parser in regex_file.ua_parsers {
+      ua_matchers.push(UserAgentMatcher {
         regex: Regex::new(&parser.regex)?,
         family_replacement_has_group: parser
           .family_replacement
@@ -37,9 +37,10 @@ impl UAParser {
         v1_replacement: parser.v1_replacement,
         v2_replacement: parser.v2_replacement,
         v3_replacement: parser.v3_replacement,
+        v4_replacement: parser.v4_replacement,
       });
     }
-    Ok(Self { browser_matchers })
+    Ok(Self { ua_matchers })
   }
 
   pub fn parse(&self, user_agent: String) -> Client {
@@ -50,7 +51,7 @@ impl UAParser {
 
   fn _parse_user_agent(&self, user_agent: String) -> UserAgent {
     self
-      .browser_matchers
+      .ua_matchers
       .iter()
       .find_map(|matcher| matcher.parse(user_agent.clone()))
       .unwrap_or_default()
