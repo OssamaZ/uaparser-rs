@@ -36,7 +36,6 @@ impl Default for UserAgent {
 #[derive(Debug)]
 pub struct UserAgentMatcher {
   pub regex: Regex,
-  pub family_replacement_has_group: bool,
   pub family_replacement: Option<String>,
   pub v1_replacement: Option<String>,
   pub v2_replacement: Option<String>,

@@ -4,20 +4,30 @@
 //! ```rust
 //! use uaparser_rs::UAParser;
 //! let uap = UAParser::from_yaml("./src/regexes.yaml").expect("Unable to load regexes file.");
-//! let ua_str = String::from("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36");
-//! let result = uap.parse(ua_str);
-//! assert_eq!(result.user_agent.family, "Chrome");
+//! let ua_str = String::from("Mozilla/5.0 (Linux; Android 4.0.1; Galaxy Nexus Build/ITL41F) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.58 Mobile Safari/537.31");
+//! let client = uap.parse(ua_str);
+//! // User Agent
+//! assert_eq!(client.user_agent.family, "Chrome Mobile");
+//! assert_eq!(client.user_agent.major, Some(String::from("26")));
+//! assert_eq!(client.user_agent.minor, Some(String::from("0")));
+//! assert_eq!(client.user_agent.patch, Some(String::from("1410")));
+//! assert_eq!(client.user_agent.patch_minor, Some(String::from("58")));
+//! // Device
+//! assert_eq!(client.device.family, "Samsung Galaxy Nexus");
+//! assert_eq!(client.device.brand, Some(String::from("Samsung")));
+//! assert_eq!(client.device.model, Some(String::from("Galaxy Nexus")));
 //! ```
 //! You can also use the string itself
 //! ```rust
 // ! let uap = UAParser::from_yaml("./src/regexes.yaml").expect("Unable to load regexes file.");
-// ! let ua_str = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36";
+// ! let ua_str = "Mozilla/5.0 (Linux; Android 4.0.1; Galaxy Nexus Build/ITL41F) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.58 Mobile Safari/537.31";
 // ! let user_agent: user_agent = ua_str.parse().expect("Unable to parse string");
 // ! assert_eq!(user_agent.family, "user_agent");
 // ! assert_eq!(user_agent.family, "user_agent");
 //! ```
 //!
 
+mod device;
 mod error;
 mod parser;
 mod user_agent;
@@ -31,6 +41,30 @@ mod test {
   use super::*;
   use serde::Deserialize;
   use std::fs;
+
+  #[test]
+  fn test_ua() {
+    let uap = UAParser::from_yaml("./src/regexes.yaml").unwrap();
+    let ua_str = String::from("Mozilla/5.0 (Linux; Android 4.0.1; Galaxy Nexus Build/ITL41F) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.58 Mobile Safari/537.31");
+    let client = uap.parse(ua_str);
+    println!("{:#?}", client.user_agent);
+    assert_eq!(client.user_agent.family, "Chrome Mobile");
+    assert_eq!(client.user_agent.major, Some(String::from("26")));
+    assert_eq!(client.user_agent.minor, Some(String::from("0")));
+    assert_eq!(client.user_agent.patch, Some(String::from("1410")));
+    assert_eq!(client.user_agent.patch_minor, Some(String::from("58")));
+  }
+
+  #[test]
+  fn test_device() {
+    let uap = UAParser::from_yaml("./src/regexes.yaml").unwrap();
+    let ua_str = String::from("Mozilla/5.0 (Linux; Android 4.0.1; Galaxy Nexus Build/ITL41F) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.58 Mobile Safari/537.31");
+    let client = uap.parse(ua_str);
+    println!("{:#?}", client.device);
+    assert_eq!(client.device.family, "Samsung Galaxy Nexus");
+    assert_eq!(client.device.brand, Some(String::from("Samsung")));
+    assert_eq!(client.device.model, Some(String::from("Galaxy Nexus")));
+  }
 
   #[test]
   fn ua_tests() {
@@ -60,7 +94,7 @@ mod test {
       .test_cases
       .iter()
       .map_while(|uat| {
-        let Client { user_agent } = uap.parse(uat.ua_str.clone());
+        let Client { user_agent, .. } = uap.parse(uat.ua_str.clone());
         let UserAgent {
           family,
           major,
@@ -81,17 +115,5 @@ mod test {
       .collect();
 
     assert!(failures.is_empty());
-  }
-
-  #[test]
-  fn test_1() {
-    let uap = UAParser::from_yaml("./src/regexes.yaml").unwrap();
-    let ua1 = String::from("Mozilla/5.0 (Linux; Android 4.1.1; SPH-L710 Build/JRO03L) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166 Mobile Safari/535.19");
-    let client = uap.parse(ua1);
-    assert_eq!(client.user_agent.family, "Chrome Mobile");
-    assert_eq!(client.user_agent.major, Some(String::from("18")));
-    assert_eq!(client.user_agent.minor, Some(String::from("0")));
-    assert_eq!(client.user_agent.patch, Some(String::from("1025")));
-    assert_eq!(client.user_agent.patch_minor, Some(String::from("166")));
   }
 }
