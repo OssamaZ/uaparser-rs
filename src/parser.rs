@@ -52,11 +52,11 @@ impl UAParser {
     for parser in regex_file.os_parsers {
       os_matchers.push(OsMatcher {
         regex: Regex::new(&parser.regex)?,
-        family_replacement: parser.family_replacement,
-        v1_replacement: parser.v1_replacement,
-        v2_replacement: parser.v2_replacement,
-        v3_replacement: parser.v3_replacement,
-        v4_replacement: parser.v4_replacement,
+        os_replacement: parser.os_replacement,
+        os_v1_replacement: parser.os_v1_replacement,
+        os_v2_replacement: parser.os_v2_replacement,
+        os_v3_replacement: parser.os_v3_replacement,
+        os_v4_replacement: parser.os_v4_replacement,
       });
     }
     Ok(Self {

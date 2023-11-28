@@ -21,11 +21,11 @@ pub struct UserAgentParser {
 #[derive(Serialize, Deserialize)]
 pub struct OsParser {
   pub regex: String,
-  pub family_replacement: Option<String>,
-  pub v1_replacement: Option<String>,
-  pub v2_replacement: Option<String>,
-  pub v3_replacement: Option<String>,
-  pub v4_replacement: Option<String>,
+  pub os_replacement: Option<String>,
+  pub os_v1_replacement: Option<String>,
+  pub os_v2_replacement: Option<String>,
+  pub os_v3_replacement: Option<String>,
+  pub os_v4_replacement: Option<String>,
 }
 
 #[derive(Serialize, Deserialize)]

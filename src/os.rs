@@ -36,11 +36,11 @@ impl Default for Os {
 #[derive(Debug)]
 pub struct OsMatcher {
   pub regex: Regex,
-  pub family_replacement: Option<String>,
-  pub v1_replacement: Option<String>,
-  pub v2_replacement: Option<String>,
-  pub v3_replacement: Option<String>,
-  pub v4_replacement: Option<String>,
+  pub os_replacement: Option<String>,
+  pub os_v1_replacement: Option<String>,
+  pub os_v2_replacement: Option<String>,
+  pub os_v3_replacement: Option<String>,
+  pub os_v4_replacement: Option<String>,
 }
 
 impl Parser for OsMatcher {
@@ -49,8 +49,8 @@ impl Parser for OsMatcher {
     if let Some(captures) = self.regex.captures(str.as_str()) {
       let mut os = Os::default();
       // family
-      os.family = match &self.family_replacement {
-        Some(family_replacement) => replace_captures(family_replacement, &captures),
+      os.family = match &self.os_replacement {
+        Some(os_replacement) => replace_captures(os_replacement, &captures),
         None => captures
           .get(1)
           .map_or_else(|| "", |m| m.as_str())
@@ -58,8 +58,8 @@ impl Parser for OsMatcher {
       };
 
       // major
-      os.major = match &self.v1_replacement {
-        Some(v1_replacement) => Some(replace_captures(v1_replacement, &captures)),
+      os.major = match &self.os_v1_replacement {
+        Some(os_v1_replacement) => Some(replace_captures(os_v1_replacement, &captures)),
         None => captures.get(2).and_then(|m| {
           let s = m.as_str();
           if s == "" {
@@ -71,8 +71,8 @@ impl Parser for OsMatcher {
       };
 
       // minor
-      os.minor = match &self.v2_replacement {
-        Some(v2_replacement) => Some(replace_captures(v2_replacement, &captures)),
+      os.minor = match &self.os_v2_replacement {
+        Some(os_v2_replacement) => Some(replace_captures(os_v2_replacement, &captures)),
         None => captures.get(3).and_then(|m| {
           let s = m.as_str();
           if s == "" {
@@ -84,8 +84,8 @@ impl Parser for OsMatcher {
       };
 
       // patch
-      os.patch = match &self.v3_replacement {
-        Some(v3_replacement) => Some(replace_captures(v3_replacement, &captures)),
+      os.patch = match &self.os_v3_replacement {
+        Some(os_v3_replacement) => Some(replace_captures(os_v3_replacement, &captures)),
         None => captures.get(4).and_then(|m| {
           let s = m.as_str();
           if s == "" {
@@ -97,8 +97,8 @@ impl Parser for OsMatcher {
       };
 
       // patch_minor
-      os.patch_minor = match &self.v4_replacement {
-        Some(v4_replacement) => Some(replace_captures(v4_replacement, &captures)),
+      os.patch_minor = match &self.os_v4_replacement {
+        Some(os_v4_replacement) => Some(replace_captures(os_v4_replacement, &captures)),
         None => captures.get(5).and_then(|m| {
           let s = m.as_str();
           if s == "" {

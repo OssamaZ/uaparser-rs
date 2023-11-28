@@ -156,4 +156,58 @@ mod test {
 
     assert!(failures.is_empty());
   }
+
+  #[test]
+  fn os_tests() {
+    #[derive(Deserialize, Debug)]
+    struct OsTestFile {
+      test_cases: Vec<OsTest>,
+    }
+
+    #[derive(Deserialize, Debug)]
+    struct OsTest {
+      #[serde(rename = "user_agent_string")]
+      ua_str: String,
+      family: String,
+      major: Option<String>,
+      minor: Option<String>,
+      patch: Option<String>,
+      patch_minor: Option<String>,
+    }
+
+    let uap = UAParser::from_yaml("./src/tests/regexes.yaml").unwrap();
+    let tests_file =
+      fs::File::open("./src/tests/os_tests.yaml").expect("Unable to open the ua test file.");
+    let parsed_tests: OsTestFile =
+      serde_yaml::from_reader(tests_file).expect("Unable to parse ua test file.");
+
+    let failures: Vec<_> = parsed_tests
+      .test_cases
+      .iter()
+      .map_while(|uat| {
+        let Client { os, .. } = uap.parse(uat.ua_str.clone());
+        // let Os {
+        //   family,
+        //   major,
+        //   minor,
+        //   patch,
+        //   patch_minor,
+        // } = os;
+        if os.family == uat.family
+          && os.major == uat.major
+          && os.minor == uat.minor
+          && os.patch == uat.patch
+          && os.patch_minor == uat.patch_minor
+        {
+          return None;
+        }
+        println!("Expected: {:#?}", uat);
+        println!("Got: {:#?}", os);
+        println!("--");
+        Some(uat.ua_str.as_str())
+      })
+      .collect();
+
+    assert!(failures.is_empty());
+  }
 }
