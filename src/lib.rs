@@ -1,4 +1,4 @@
-//! This is a simple implementation of the user agent parser based on the
+//! Simple implementation of the user agent parser based on the
 //! [ua-parser/specification](https://github.com/ua-parser/uap-core/blob/master/docs/specification.md).
 //!
 //! ```rust
@@ -45,15 +45,6 @@
 //! assert_eq!(client.device.brand, Some(String::from("Samsung")));
 //! assert_eq!(client.device.model, Some(String::from("Galaxy Nexus")));
 //! ```
-//! You can also use the string itself
-//! ```rust
-// ! let uap = UAParser::from_yaml("./regexes.yaml").unwrap();
-// ! let ua_str = "Mozilla/5.0 (Linux; Android 4.0.1; Galaxy Nexus Build/ITL41F) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.58 Mobile Safari/537.31";
-// ! let user_agent: user_agent = ua_str.parse().expect("Unable to parse string");
-// ! assert_eq!(user_agent.family, "user_agent");
-// ! assert_eq!(user_agent.family, "user_agent");
-//! ```
-//!
 
 mod device;
 mod error;
