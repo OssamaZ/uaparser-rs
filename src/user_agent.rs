@@ -45,8 +45,8 @@ pub struct UserAgentMatcher {
 
 impl Parser for UserAgentMatcher {
   type Item = UserAgent;
-  fn parse(&self, str: String) -> Option<Self::Item> {
-    if let Some(captures) = self.regex.captures(str.as_str()) {
+  fn parse(&self, str: &str) -> Option<Self::Item> {
+    if let Some(captures) = self.regex.captures(str) {
       let mut user_agent = UserAgent::default();
       // family
       user_agent.family = match &self.family_replacement {

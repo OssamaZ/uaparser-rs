@@ -3,8 +3,8 @@
 //!
 //! ```rust
 //! use uaparser_rs::UAParser;
-//! let uap = UAParser::from_yaml("./src/tests/regexes.yaml").unwrap();
-//! let ua_str = String::from("Mozilla/5.0 (Linux; Android 4.0.1; Galaxy Nexus Build/ITL41F) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.58 Mobile Safari/537.31");
+//! let uap = UAParser::from_yaml("./regexes.yaml").unwrap();
+//! let ua_str = "Mozilla/5.0 (Linux; Android 4.0.1; Galaxy Nexus Build/ITL41F) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.58 Mobile Safari/537.31";
 //! let client = uap.parse(ua_str);
 //! /*
 //! client {
@@ -47,7 +47,7 @@
 //! ```
 //! You can also use the string itself
 //! ```rust
-// ! let uap = UAParser::from_yaml("./src/tests/regexes.yaml").unwrap();
+// ! let uap = UAParser::from_yaml("./regexes.yaml").unwrap();
 // ! let ua_str = "Mozilla/5.0 (Linux; Android 4.0.1; Galaxy Nexus Build/ITL41F) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.58 Mobile Safari/537.31";
 // ! let user_agent: user_agent = ua_str.parse().expect("Unable to parse string");
 // ! assert_eq!(user_agent.family, "user_agent");
@@ -91,7 +91,7 @@ mod test {
       patch_minor: Option<String>,
     }
 
-    let uap = UAParser::from_yaml("./src/tests/regexes.yaml").unwrap();
+    let uap = UAParser::from_yaml("./regexes.yaml").unwrap();
     let tests_file =
       fs::File::open("./src/tests/ua_tests.yaml").expect("Unable to open the ua test file.");
     let parsed_tests: UATestFile =
@@ -101,7 +101,7 @@ mod test {
       .test_cases
       .iter()
       .map_while(|uat| {
-        let Client { user_agent, .. } = uap.parse(uat.ua_str.clone());
+        let Client { user_agent, .. } = uap.parse(&uat.ua_str);
         if user_agent.family == uat.family
           && user_agent.major == uat.major
           && user_agent.minor == uat.minor
@@ -138,7 +138,7 @@ mod test {
       patch_minor: Option<String>,
     }
 
-    let uap = UAParser::from_yaml("./src/tests/regexes.yaml").unwrap();
+    let uap = UAParser::from_yaml("./regexes.yaml").unwrap();
     let tests_file =
       fs::File::open("./src/tests/os_tests.yaml").expect("Unable to open the ua test file.");
     let parsed_tests: OsTestFile =
@@ -148,7 +148,7 @@ mod test {
       .test_cases
       .iter()
       .map_while(|uat| {
-        let Client { os, .. } = uap.parse(uat.ua_str.clone());
+        let Client { os, .. } = uap.parse(&uat.ua_str);
         if os.family == uat.family
           && os.major == uat.major
           && os.minor == uat.minor
@@ -183,7 +183,7 @@ mod test {
       model: Option<String>,
     }
 
-    let uap = UAParser::from_yaml("./src/tests/regexes.yaml").unwrap();
+    let uap = UAParser::from_yaml("./regexes.yaml").unwrap();
     let tests_file =
       fs::File::open("./src/tests/device_tests.yaml").expect("Unable to open the ua test file.");
     let parsed_tests: DeviceTestFile =
@@ -193,7 +193,7 @@ mod test {
       .test_cases
       .iter()
       .map_while(|uat| {
-        let Client { device, .. } = uap.parse(uat.ua_str.clone());
+        let Client { device, .. } = uap.parse(&uat.ua_str);
         if device.family == uat.family && device.brand == uat.brand && device.model == uat.model {
           return None;
         }

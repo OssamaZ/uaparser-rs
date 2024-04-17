@@ -39,8 +39,8 @@ pub struct DeviceMatcher {
 
 impl Parser for DeviceMatcher {
   type Item = Device;
-  fn parse(&self, str: String) -> Option<Self::Item> {
-    if let Some(captures) = self.regex.captures(str.as_str()) {
+  fn parse(&self, str: &str) -> Option<Self::Item> {
+    if let Some(captures) = self.regex.captures(str) {
       let mut device = Device::default();
       // name
       device.family = match &self.device_replacement {

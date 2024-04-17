@@ -7,7 +7,7 @@ use std::fs;
 
 pub trait Parser {
   type Item;
-  fn parse(&self, str: String) -> Option<Self::Item>;
+  fn parse(&self, str: &str) -> Option<Self::Item>;
 }
 
 #[derive(Debug)]
@@ -66,22 +66,22 @@ impl UAParser {
     })
   }
 
-  pub fn parse(&self, user_agent: String) -> Client {
+  pub fn parse(&self, user_agent: &str) -> Client {
     Client {
       user_agent: self
         .ua_matchers
         .iter()
-        .find_map(|matcher| matcher.parse(user_agent.clone()))
+        .find_map(|matcher| matcher.parse(user_agent))
         .unwrap_or_default(),
       os: self
         .os_matchers
         .iter()
-        .find_map(|matcher| matcher.parse(user_agent.clone()))
+        .find_map(|matcher| matcher.parse(user_agent))
         .unwrap_or_default(),
       device: self
         .device_matchers
         .iter()
-        .find_map(|matcher| matcher.parse(user_agent.clone()))
+        .find_map(|matcher| matcher.parse(user_agent))
         .unwrap_or_default(),
     }
   }
