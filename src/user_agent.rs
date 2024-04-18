@@ -47,66 +47,58 @@ impl Parser for UserAgentMatcher {
   type Item = UserAgent;
   fn parse(&self, str: &str) -> Option<Self::Item> {
     if let Some(captures) = self.regex.captures(str) {
-      let mut user_agent = UserAgent::default();
-      // family
-      user_agent.family = match &self.family_replacement {
-        Some(family_replacement) => replace_captures(family_replacement, &captures),
-        None => captures
-          .get(1)
-          .map_or_else(|| "", |m| m.as_str())
-          .to_owned(),
-      };
-
-      // major
-      user_agent.major = match &self.v1_replacement {
-        Some(v1_replacement) => Some(replace_captures(v1_replacement, &captures)),
-        None => captures.get(2).and_then(|m| {
-          let s = m.as_str();
-          if s == "" {
-            None
-          } else {
-            Some(s.to_owned())
-          }
-        }),
-      };
-
-      // minor
-      user_agent.minor = match &self.v2_replacement {
-        Some(v2_replacement) => Some(replace_captures(v2_replacement, &captures)),
-        None => captures.get(3).and_then(|m| {
-          let s = m.as_str();
-          if s == "" {
-            None
-          } else {
-            Some(s.to_owned())
-          }
-        }),
-      };
-
-      // patch
-      user_agent.patch = match &self.v3_replacement {
-        Some(v3_replacement) => Some(replace_captures(v3_replacement, &captures)),
-        None => captures.get(4).and_then(|m| {
-          let s = m.as_str();
-          if s == "" {
-            None
-          } else {
-            Some(s.to_owned())
-          }
-        }),
-      };
-
-      // patch_minor
-      user_agent.patch_minor = match &self.v4_replacement {
-        Some(v4_replacement) => Some(replace_captures(v4_replacement, &captures)),
-        None => captures.get(5).and_then(|m| {
-          let s = m.as_str();
-          if s == "" {
-            None
-          } else {
-            Some(s.to_owned())
-          }
-        }),
+      let user_agent = UserAgent {
+        family: match &self.family_replacement {
+          Some(family_replacement) => replace_captures(family_replacement, &captures),
+          None => captures
+            .get(1)
+            .map_or_else(|| "", |m| m.as_str())
+            .to_owned(),
+        },
+        major: match &self.v1_replacement {
+          Some(v1_replacement) => Some(replace_captures(v1_replacement, &captures)),
+          None => captures.get(2).and_then(|m| {
+            let s = m.as_str();
+            if s.is_empty() {
+              None
+            } else {
+              Some(s.to_owned())
+            }
+          }),
+        },
+        minor: match &self.v2_replacement {
+          Some(v2_replacement) => Some(replace_captures(v2_replacement, &captures)),
+          None => captures.get(3).and_then(|m| {
+            let s = m.as_str();
+            if s.is_empty() {
+              None
+            } else {
+              Some(s.to_owned())
+            }
+          }),
+        },
+        patch: match &self.v3_replacement {
+          Some(v3_replacement) => Some(replace_captures(v3_replacement, &captures)),
+          None => captures.get(4).and_then(|m| {
+            let s = m.as_str();
+            if s.is_empty() {
+              None
+            } else {
+              Some(s.to_owned())
+            }
+          }),
+        },
+        patch_minor: match &self.v4_replacement {
+          Some(v4_replacement) => Some(replace_captures(v4_replacement, &captures)),
+          None => captures.get(5).and_then(|m| {
+            let s = m.as_str();
+            if s.is_empty() {
+              None
+            } else {
+              Some(s.to_owned())
+            }
+          }),
+        },
       };
 
       return Some(user_agent);
