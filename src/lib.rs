@@ -1,34 +1,57 @@
+//! # User Agent Parser
 //! Simple implementation of the user agent parser based on the
 //! [ua-parser/specification](https://github.com/ua-parser/uap-core/blob/master/docs/specification.md).
 //!
-//! ```rust
+//! ## Installation
+//! Install the package through Cargo
+//! ```rust,ignore
+//! cargo add uaparser-rs
+//! ```
+//! Or add manually to your `Cargo.toml` file
+//!
+//! ```rust,ignore
+//! [dependencies]
+//!
+//! # Add the dependency
+//! uaparser-rs = "0.1.0"
+//! ```
+//! ## Usage
+//!
+//! ```rust,ignore
 //! use uaparser_rs::UAParser;
 //! let uap = UAParser::from_yaml("./regexes.yaml").unwrap();
-//! let ua_str = "Mozilla/5.0 (Linux; Android 4.0.1; Galaxy Nexus Build/ITL41F) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.58 Mobile Safari/537.31";
-//! let client = uap.parse(ua_str);
-//! /*
+//! let ua_str = "Mozilla/5.0 (Linux; Android 4.0.1; Galaxy Nexus Build/ITL41F) AppleWebKit 537.31 (KHTML, like Gecko) Chrome/26.0.1410.58 Mobile Safari/537.31";
+//!
+//! let client = uap.parser(ua_str);
+//! ```
+//! `parse(&str)` returns a client object containing browser, os and device data.
+//!
+//! ```rust,ignore
 //! client {
-//!   user_agent: {
-//!     family,
-//!     major,
-//!     minor,
-//!     patch,
-//!     patch_minor,
+//!   user_agent {
+//!     family: String,
+//!     major: Option<String>,
+//!     minor: Option<String>,
+//!     patch: Option<String>,
+//!     patch_minor: Option<String>,
 //!   },
 //!   os: {
-//!     family,
-//!     major,
-//!     minor,
-//!     patch,
-//!     patch_minor,
+//!     family: String,
+//!     major: Option<String>,
+//!     minor: Option<String>,
+//!     patch: Option<String>,
+//!     patch_minor: Option<String>,
 //!   },
 //!   device: {
-//!     family,
-//!     brand,
-//!     model,
+//!     family: String,
+//!     brand: Option<String>,
+//!     model: Option<String>,
 //!   }
 //! }
-//!  */
+//! ```
+//! Example:
+//!
+//! ```rust,ignore
 //! // User Agent
 //! assert_eq!(client.user_agent.family, "Chrome Mobile");
 //! assert_eq!(client.user_agent.major, Some(String::from("26")));
